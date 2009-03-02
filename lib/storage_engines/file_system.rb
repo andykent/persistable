@@ -16,17 +16,30 @@ module Persistable
       end
       
       def each
-        raise Persistable::NotImplemented
+        all_files.each do |file|
+          key = file.match(/#{@dir}\/(.+?)\.txt/)[1]
+          yield(key, read(key))
+        end
       end
       
       def count
-        raise Persistable::NotImplemented
+        all_files.length
+      end
+      
+      def clear!
+        FileUtils.rm_rf(@dir)
+        FileUtils.mkdir_p(@dir)
+        true
       end
 
       private
 
       def file(k)
         File.join(@dir, "#{k}.txt")
+      end
+      
+      def all_files
+        Dir[@dir+'/*.txt']
       end
     end
   end

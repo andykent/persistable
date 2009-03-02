@@ -31,8 +31,11 @@ module Persistable
       def count
         config(:storage_engine).count
       end
-
       alias size count
+      
+      def clear!
+        config(:storage_engine).clear!
+      end
       
       private
       

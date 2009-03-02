@@ -20,6 +20,11 @@ module Persistable
       def count
         @store.keys.size
       end
+      
+      def clear!
+        @store = {}
+        true
+      end
     end
   end
 end

@@ -3,8 +3,10 @@ require "digest/sha1"
 
 class Person
   include Persistable
+  include Indexable
+  use :storage_engine, StorageEngines::TokyoCabinetHashDB.new('tmp/person.tch')
   
-  # use :storage_engine, StorageEngines::TokyoCabinetHashDB.new('person.tch')
+  index :email
   
   def initialize(attributes)
     @attributes = attributes
@@ -36,43 +38,43 @@ Person.each {|k, p| puts "#{p.name} (#{p.email})" }
 puts Person.count
 
 
-
-
-
-
-class Product
-  include Persistable
-  
-  # use :storage_engine, StorageEngines::TokyoCabinetHashDB.new('demo.tch')
-  use :storage_engine, StorageEngines::FileSystem.new(File.dirname(__FILE__)+'/tmp')
-  use :marshal_strategy, MarshalStrategies::JSON.new
-  use :key do
-    Digest::SHA1.hexdigest(@url)
-  end
-  
-  attr_reader :name, :url
-  
-  use :save do
-    { 'name' => @name, 'url' => @url }
-  end
-  
-  use :load do |data|
-    Product.new(data['name'], data['url'])
-  end
-  
-  def initialize(name, url)
-    @name, @url = name, url
-  end
-end
-
-
-if Product.new("Test Product", "http://www.google.com/1").save
-  sha1 = Digest::SHA1.hexdigest("http://www.google.com/1")
-  puts Product.load(sha1).name
-end
-
-
-
+# 
+# 
+# 
+# 
+# class Product
+#   include Persistable
+#   
+#   # use :storage_engine, StorageEngines::TokyoCabinetHashDB.new('tmp/demo.tch')
+#   use :storage_engine, StorageEngines::FileSystem.new(File.dirname(__FILE__)+'/tmp')
+#   use :marshal_strategy, MarshalStrategies::JSON.new
+#   use :key do
+#     Digest::SHA1.hexdigest(@url)
+#   end
+#   
+#   attr_reader :name, :url
+#   
+#   use :save do
+#     { 'name' => @name, 'url' => @url }
+#   end
+#   
+#   use :load do |data|
+#     Product.new(data['name'], data['url'])
+#   end
+#   
+#   def initialize(name, url)
+#     @name, @url = name, url
+#   end
+# end
+# 
+# 
+# if Product.new("Test Product", "http://www.google.com/1").save
+#   sha1 = Digest::SHA1.hexdigest("http://www.google.com/1")
+#   puts Product.load(sha1).name
+# end
+# 
+# 
+# 
 
 
 # def run_benchmark(n, strategy)

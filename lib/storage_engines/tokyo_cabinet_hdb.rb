@@ -28,6 +28,10 @@ module Persistable
       def count
         @connection.rnum
       end
+      
+      def clear!
+        @connection.vanish
+      end
     end
   end
 end

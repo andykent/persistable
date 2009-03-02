@@ -1,3 +1,4 @@
+kcode = 'u'
 $LOAD_PATH << File.dirname(__FILE__)
 
 require "mixins/class_methods"
@@ -14,9 +15,9 @@ require "storage_engines/tokyo_cabinet_hdb"
 
 
 module Persistable
-  
-  class ConnectionError < StandardError; end
-  class NotImplemented < StandardError; end
+  class Error < StandardError; end
+  class ConnectionError < Persistable::Error; end
+  class NotImplemented < Persistable::Error; end
   
   def self.included(c)
     c.send(:extend, Mixins::ClassMethods)
