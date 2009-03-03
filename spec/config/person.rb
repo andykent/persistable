@@ -5,7 +5,9 @@ class PersonSearchableSpecClass
   include Indexable
   include SphinxSearchable
   
-  index :guid, :store => Persistable::StorageEngines::InMemory.new
+  index :guid do
+    use :storage_engine, Persistable::StorageEngines::InMemory.new
+  end
   
   sphinx_index :people do
     set :max_matches, 100

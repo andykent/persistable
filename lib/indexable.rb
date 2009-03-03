@@ -57,7 +57,6 @@ module Persistable
     end
     
     class UniqueIndex
-      
       def initialize(&blk)
         @index_entry_class = Class.new(Persistable::Indexable::IndexEntry)
         @index_entry_class.class_eval(&blk)
@@ -83,31 +82,5 @@ module Persistable
         @index_entry_class.clear!
       end
     end
-    
-    # class IncrementingIndex
-    #   def initialize(store)
-    #     @store = store
-    #     @store.write('__counter__', '0')
-    #   end
-    #   
-    #   def add_entry(destination_key)
-    #     @store.write(next_available_key, destination_key.to_s)
-    #   end
-    #   
-    #   def delete_entry(index_value)
-    #     @store.delete(index_value)
-    #   end
-    #   
-    #   def find(key)
-    #     @store.read(key.to_s)
-    #   end
-    #   
-    #   private
-    #   def next_available_key
-    #     next_key = (@store.read('__counter__').to_i + 1).to_s
-    #     @store.write('__counter__', next_key)
-    #     next_key
-    #   end
-    # end
   end
 end

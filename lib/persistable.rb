@@ -6,6 +6,8 @@ $LOAD_PATH.unshift File.dirname(__FILE__)
 require "indexable"
 require "sphinx_searchable"
 
+require "persistable/guid_generator"
+
 require "persistable/mixins/class_methods"
 require "persistable/mixins/instance_methods"
 
@@ -17,12 +19,6 @@ require "persistable/storage_engines/file_system"
 require "persistable/storage_engines/in_memory"
 require "persistable/storage_engines/tokyo_cabinet_hdb"
 
-class Object
-  def persistable?
-    ancestors.include?(Persistable)
-  end
-end
-
 module Persistable
   class Error < StandardError; end
   class ConnectionError < Persistable::Error; end
@@ -33,5 +29,11 @@ module Persistable
     c.send(:extend, Mixins::ClassMethods)
     c.send(:include, Mixins::InstanceMethods)
     c.reset_persistable_defaults
+  end
+end
+
+class Object
+  def self.persistable?
+    self.ancestors.include?(Persistable)
   end
 end
