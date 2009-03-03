@@ -2,7 +2,9 @@ require File.join(File.dirname(__FILE__), '..', 'spec_helper')
 
 class HooksSpecClass
   include Persistable
-  class << self; attr_accessor :before_load_hook, :after_load_hook end
+  class << self
+    attr_accessor :before_load_hook, :after_load_hook , :before_clear_hook, :after_clear_hook
+  end
   attr_accessor :before_hook, :after_hook, :before_delete_hook, :after_delete_hook
   before(:save) { |obj| obj.before_hook = 'BEFORE' }
   after(:save) { |obj| obj.after_hook = "AFTER" }
@@ -12,6 +14,9 @@ class HooksSpecClass
 
   before(:delete) { |obj| obj.before_delete_hook = "BEFORE DELETE" }
   after(:delete) { |obj| obj.after_delete_hook = "AFTER DELETE" }
+
+  before(:clear) { |klass| klass.before_clear_hook = "BEFORE CLEAR" }
+  after(:clear) { |klass| klass.after_clear_hook = "AFTER CLEAR" }
   
   def key; 'test' end
   def to_storage_hash; {} end
@@ -38,6 +43,12 @@ describe "Hooks" do
       obj.delete
       obj.before_delete_hook.should == 'BEFORE DELETE'
     end
+    
+    it "should allow adding before hooks to clear!" do
+      HooksSpecClass.new.save
+      HooksSpecClass.clear!
+      HooksSpecClass.before_clear_hook.should == 'BEFORE CLEAR'
+    end
   end
   
   describe "#after" do
@@ -58,6 +69,12 @@ describe "Hooks" do
       obj.save
       obj.delete
       obj.after_delete_hook.should == 'AFTER DELETE'
+    end
+    
+    it "should allow adding after hooks to clear!" do
+      HooksSpecClass.new.save
+      HooksSpecClass.clear!
+      HooksSpecClass.after_clear_hook.should == 'AFTER CLEAR'
     end
   end
 end

@@ -7,11 +7,11 @@ module Persistable
     
     module Mixins
       module ClassMethods
-        def index(property, opts={})
-          raise ArgumentError, "a :store option must be provided" unless opts.has_key?(:store)
-          indexes[property] = UniqueIndex.new(opts[:store])
+        def index(property, &blk)
+          indexes[property] = UniqueIndex.new(&blk)
           self.after(:save) { |obj| obj.indexes[property].add_entry(obj.send(property), obj.key) }
           self.after(:delete) { |obj| obj.indexes[property].delete_entry(obj.send(property)) }
+          self.after(:clear) { |klass| klass.indexes[property].clear! }
         end
         
         def indexes
@@ -58,9 +58,9 @@ module Persistable
     
     class UniqueIndex
       
-      def initialize(store)
+      def initialize(&blk)
         @index_entry_class = Class.new(Persistable::Indexable::IndexEntry)
-        @index_entry_class.use(:storage_engine, store)
+        @index_entry_class.class_eval(&blk)
       end
       
       def add_entry(index_value, destination_key)
@@ -73,6 +73,14 @@ module Persistable
       
       def find(key)
         @index_entry_class.load(key).destination
+      end
+      
+      def size
+        @index_entry_class.size
+      end
+      
+      def clear!
+        @index_entry_class.clear!
       end
     end
     

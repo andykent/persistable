@@ -46,7 +46,9 @@ module Persistable
       end
       
       def clear!
+        run_hook(:before, :clear)
         config(:storage_engine).clear!
+        run_hook(:after, :clear)
       end
       
       def exists?(k)

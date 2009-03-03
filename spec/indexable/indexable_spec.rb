@@ -3,7 +3,10 @@ require File.join(File.dirname(__FILE__), '..', 'spec_helper')
 class PersonIndexableSpecClass
   include Persistable
   include Indexable
-  index :email, :store => Persistable::StorageEngines::InMemory.new
+  index :email do
+     use :storage_engine, Persistable::StorageEngines::InMemory.new
+     use :marshal_strategy, Persistable::MarshalStrategies::JSON.new
+   end
   def initialize(attributes) @attributes = attributes end
   def self.from_storage_hash(attributes); new(attributes) end
   def to_storage_hash; @attributes end
@@ -32,5 +35,11 @@ describe Persistable::Indexable do
     @andy.delete
     PersonIndexableSpecClass.stub!(:load)
     lambda { PersonIndexableSpecClass.load_via_index(:email, 'andy.kent@me.com') }.should raise_error(Persistable::NotFound)   
+  end
+  
+  it "clears the index when the collection is cleared" do
+    PersonIndexableSpecClass.indexes[:email].size.should == 2
+    PersonIndexableSpecClass.clear!
+    PersonIndexableSpecClass.indexes[:email].size.should == 0
   end
 end
