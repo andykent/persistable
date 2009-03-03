@@ -3,7 +3,7 @@ require File.join(File.dirname(__FILE__), '..', 'spec_helper')
 class PersonIndexableSpecClass
   include Persistable
   include Indexable
-  unique_index :email, :store => Persistable::StorageEngines::InMemory.new
+  index :email, :store => Persistable::StorageEngines::InMemory.new
   def initialize(attributes); @attributes = attributes end
   def to_hash; @attributes end
   def key; @attributes['name'] end

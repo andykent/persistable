@@ -7,7 +7,7 @@ module Persistable
     
     module Mixins
       module ClassMethods
-        def unique_index(property, opts={})
+        def index(property, opts={})
           raise ArgumentError, "a :store option must be provided" unless opts.has_key?(:store)
           indexes[property] = UniqueIndex.new(opts[:store])
           self.after(:save) { |obj| obj.indexes[property].add_entry(obj.send(property), obj.key) }
