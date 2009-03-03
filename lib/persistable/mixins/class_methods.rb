@@ -3,6 +3,7 @@ module Persistable
     module ClassMethods
       def reset_persistable_defaults
         @config = {}
+        @hooks = {}
         use :load, :new
         use :save, :to_hash
         use :storage_engine, StorageEngines::InMemory.new
@@ -19,7 +20,10 @@ module Persistable
       end
     
       def load(k)
-        load_from_storage(config(:storage_engine).read(k))
+        run_hook(:before, :load)
+        val = load_from_storage(config(:storage_engine).read(k))
+        run_hook(:after, :load)
+        val
       end
       
       def each
@@ -41,34 +45,26 @@ module Persistable
         config(:storage_engine).has_key?(k)
       end
       
-      def before_instance_method(method, &blk)
-        add_instance_aspect(:before, method, &blk)
+      def before(action, &blk)
+        add_hook(:before, action, &blk)
       end
       
-      def after_instance_method(method, &blk)
-        add_instance_aspect(:after, method, &blk)
-      end
-      
-      def before_class_method(method, &blk)
-        add_class_aspect(:before, method, &blk)
-      end
-      
-      def after_class_method(method, &blk)
-        add_class_aspect(:after, method, &blk)
+      def after(action, &blk)
+        add_hook(:after, action, &blk)
       end
       
       private
       
-      def add_instance_aspect(position, method, &blk)
-        Aquarium::Aspects::Aspect.new(position, :calls_to => method, :for_type => self) do |join_point, obj, sym, *args|
-          obj.instance_eval(&blk)
-        end
+      def add_hook(position, action, &blk)
+        hooks_for(position, action) << blk
       end
       
-      def add_class_aspect(position, method, &blk)
-        Aquarium::Aspects::Aspect.new(position, :calls_to => method, :method_options => [:class], :for_type => self) do |join_point, obj, sym, *args|
-          obj.class_eval(&blk)
-        end
+      def run_hook(position, action, obj=self)
+        hooks_for(position, action).each { |blk| blk.call(obj) } 
+      end
+      
+      def hooks_for(position, action)
+        @hooks[:"#{position}_#{action}"] ||= []
       end
       
       def load_from_storage(data)

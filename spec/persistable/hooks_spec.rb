@@ -2,12 +2,13 @@ require File.join(File.dirname(__FILE__), '..', 'spec_helper')
 
 class HooksSpecClass
   include Persistable
-  class << self; attr_reader :before_load_hook, :after_load_hook end
-  attr_reader :before_hook, :after_hook
-  before_instance_method(:save) { @before_hook = 'BEFORE' }
-  after_instance_method(:save) { @after_hook = "AFTER" }
+  class << self; attr_accessor :before_load_hook, :after_load_hook end
+  attr_accessor :before_hook, :after_hook
+  before(:save) { |obj| obj.before_hook = 'BEFORE' }
+  after(:save) { |obj| obj.after_hook = "AFTER" }
   
-  before_class_method(:load) { @before_load_hook = "BEFORE LOAD" }
+  before(:load) { |klass| klass.before_load_hook = "BEFORE LOAD" }
+  after(:load) { |klass| klass.after_load_hook = "AFTER LOAD" }
   
   def initialize(args={}) end
   def key; 'test' end
@@ -37,7 +38,9 @@ describe "Hooks" do
     end
     
     it "should allow adding after hooks to class methods" do
-      pending
+      HooksSpecClass.new.save
+      HooksSpecClass.load("test")
+      HooksSpecClass.after_load_hook.should == 'AFTER LOAD'
     end
   end
 end

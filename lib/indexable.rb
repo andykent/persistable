@@ -10,7 +10,7 @@ module Persistable
         def unique_index(property, opts={})
           raise ArgumentError, "a :store option must be provided" unless opts.has_key?(:store)
           indexes[property] = UniqueIndex.new(opts[:store])
-          self.after_instance_method(:save) { self.indexes[property].add_entry(self.send(property), self.key) }
+          self.after(:save) { |obj| obj.indexes[property].add_entry(obj.send(property), obj.key) }
         end
         
         def indexes
@@ -30,8 +30,6 @@ module Persistable
     end
     
     class UniqueIndex
-      include Persistable
-      
       def initialize(store)
         @store = store
       end

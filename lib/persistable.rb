@@ -1,5 +1,4 @@
 require "rubygems"
-require "aquarium"
 
 kcode = 'u'
 $LOAD_PATH.unshift File.dirname(__FILE__)
