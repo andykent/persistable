@@ -22,6 +22,10 @@ module Persistable
         end
       end
       
+      def has_key?(k)
+        File.exist?(file(k))
+      end
+      
       def count
         all_files.length
       end

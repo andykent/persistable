@@ -73,5 +73,13 @@ require File.join(File.dirname(__FILE__), '..', 'spec_helper')
         Person.count.should == 0
       end
     end
+    
+    describe "#exists?" do
+      it "returns true if the key exists in the collection" do
+        Person.new('name' => 'Andy', 'email' => 'andy.kent@me.com').save
+        Person.exists?("Andy").should == true
+        Person.exists?("Mark").should == false
+      end
+    end
   end
 end

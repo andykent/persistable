@@ -17,6 +17,10 @@ module Persistable
         @store.each(&blk)
       end
       
+      def has_key?(k)
+        @store.has_key?(k)
+      end
+      
       def count
         @store.keys.size
       end

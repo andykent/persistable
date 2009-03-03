@@ -37,6 +37,10 @@ module Persistable
         config(:storage_engine).clear!
       end
       
+      def exists?(k)
+        config(:storage_engine).has_key?(k)
+      end
+      
       def before_instance_method(method, &blk)
         add_instance_aspect(:before, method, &blk)
       end

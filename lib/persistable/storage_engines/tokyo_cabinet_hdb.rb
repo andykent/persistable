@@ -24,6 +24,10 @@ module Persistable
         end
       end
       
+      def has_key?(k)
+        read(k) != nil
+      end
+      
       def count
         @connection.rnum
       end
