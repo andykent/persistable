@@ -3,10 +3,11 @@ module Persistable
     class TokyoCabinetHashDB
       def initialize(file)
         require 'tokyocabinet'
-        @connection = TokyoCabinet::HDB::new
+        @connection = connection = TokyoCabinet::HDB::new
         unless @connection.open(file, TokyoCabinet::HDB::OWRITER | TokyoCabinet::HDB::OCREAT)
           raise Persistable::ConnectionError, @connection.errmsg(@connection.ecode)
         end
+        Kernel.at_exit { connection.close }
       end
       
       def read(k)
