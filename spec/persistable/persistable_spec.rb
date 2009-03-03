@@ -1,9 +1,9 @@
-require File.join(File.dirname(__FILE__), 'spec_helper')
+require File.join(File.dirname(__FILE__), '..', 'spec_helper')
 
 [
   Persistable::StorageEngines::InMemory.new,
-  Persistable::StorageEngines::FileSystem.new(File.join(File.dirname(__FILE__), '..', 'tmp', 'fs_spec_store')),
-  Persistable::StorageEngines::TokyoCabinetHashDB.new(File.join(File.dirname(__FILE__), '..', 'tmp', 'tchdb_spec.tch')),
+  Persistable::StorageEngines::FileSystem.new(File.join(File.dirname(__FILE__), '..', '..', 'tmp', 'fs_spec_store')),
+  Persistable::StorageEngines::TokyoCabinetHashDB.new(File.join(File.dirname(__FILE__), '..', '..', 'tmp', 'tchdb_spec.tch')),
 ].each do |storage_engine|
 
   class Person

@@ -1,16 +1,21 @@
+require "rubygems"
+require "aquarium"
+
 kcode = 'u'
-$LOAD_PATH << File.dirname(__FILE__)
+$LOAD_PATH.unshift File.dirname(__FILE__)
 
-require "mixins/class_methods"
-require "mixins/instance_methods"
+require "indexable"
 
-require "marshal_strategies/json"
-require "marshal_strategies/yaml"
-require "marshal_strategies/ruby_marshal"
+require "persistable/mixins/class_methods"
+require "persistable/mixins/instance_methods"
 
-require "storage_engines/file_system"
-require "storage_engines/in_memory"
-require "storage_engines/tokyo_cabinet_hdb"
+require "persistable/marshal_strategies/json"
+require "persistable/marshal_strategies/yaml"
+require "persistable/marshal_strategies/ruby_marshal"
+
+require "persistable/storage_engines/file_system"
+require "persistable/storage_engines/in_memory"
+require "persistable/storage_engines/tokyo_cabinet_hdb"
 
 
 

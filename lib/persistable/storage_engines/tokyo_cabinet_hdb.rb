@@ -2,7 +2,6 @@ module Persistable
   module StorageEngines
     class TokyoCabinetHashDB
       def initialize(file)
-        require 'rubygems'
         require 'tokyocabinet'
         @connection = TokyoCabinet::HDB::new
         unless @connection.open(file, TokyoCabinet::HDB::OWRITER | TokyoCabinet::HDB::OCREAT)

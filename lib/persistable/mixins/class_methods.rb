@@ -37,7 +37,35 @@ module Persistable
         config(:storage_engine).clear!
       end
       
+      def before_instance_method(method, &blk)
+        add_instance_aspect(:before, method, &blk)
+      end
+      
+      def after_instance_method(method, &blk)
+        add_instance_aspect(:after, method, &blk)
+      end
+      
+      def before_class_method(method, &blk)
+        add_class_aspect(:before, method, &blk)
+      end
+      
+      def after_class_method(method, &blk)
+        add_class_aspect(:after, method, &blk)
+      end
+      
       private
+      
+      def add_instance_aspect(position, method, &blk)
+        Aquarium::Aspects::Aspect.new(position, :calls_to => method, :for_type => self) do |join_point, obj, sym, *args|
+          obj.instance_eval(&blk)
+        end
+      end
+      
+      def add_class_aspect(position, method, &blk)
+        Aquarium::Aspects::Aspect.new(position, :calls_to => method, :method_options => [:class], :for_type => self) do |join_point, obj, sym, *args|
+          obj.class_eval(&blk)
+        end
+      end
       
       def load_from_storage(data)
         load_from_hash(config(:marshal_strategy).from_storage(data))
