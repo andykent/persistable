@@ -35,21 +35,44 @@ module Persistable
       end
     end
     
+    class IndexEntry
+      include Persistable
+      attr_reader :my_key, :destination
+      def initialize(my_key, destination)
+        @my_key, @destination = my_key.to_s, destination.to_s
+      end
+
+      def to_storage_hash
+        { 'my_key' => my_key, 'destination_key' => destination }
+      end
+
+      def self.from_storage_hash(attrs)
+        new(attrs['my_key'], attrs['destination_key'])
+      end
+      
+      def self.inherited(subclass)
+        subclass.send(:include, Persistable)
+        subclass.use(:key, :my_key)
+      end
+    end
+    
     class UniqueIndex
+      
       def initialize(store)
-        @store = store
+        @index_entry_class = Class.new(Persistable::Indexable::IndexEntry)
+        @index_entry_class.use(:storage_engine, store)
       end
       
       def add_entry(index_value, destination_key)
-        @store.write(index_value.to_s, destination_key.to_s)
+        @index_entry_class.new(index_value, destination_key).save!
       end
       
       def delete_entry(index_value)
-        @store.delete(index_value)
+        @index_entry_class.delete(index_value)
       end
       
       def find(key)
-        @store.read(key)
+        @index_entry_class.load(key).destination
       end
     end
     
