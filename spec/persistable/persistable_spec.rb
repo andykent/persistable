@@ -85,5 +85,24 @@ require File.join(File.dirname(__FILE__), '..', 'spec_helper')
         Person.exists?("Mark").should == false
       end
     end
+    
+    describe "#delete" do
+      it "deletes a key from the collection" do
+        Person.new('name' => 'Andy', 'email' => 'andy.kent@me.com').save
+        Person.exists?("Andy").should == true
+        Person.delete("Andy")
+        Person.exists?("Andy").should == false
+      end
+    end
+    
+    describe ".delete" do
+      it "deletes the current object from the collection" do
+        p = Person.new('name' => 'Andy', 'email' => 'andy.kent@me.com')
+        p.save
+        Person.exists?("Andy").should == true
+        p.delete
+        Person.exists?("Andy").should == false
+      end
+    end
   end
 end

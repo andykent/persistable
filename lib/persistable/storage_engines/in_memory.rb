@@ -14,6 +14,10 @@ module Persistable
         @store[k] = v
       end
       
+      def delete(k)
+        @store.delete(k)
+      end
+      
       def each(&blk)
         @store.each(&blk)
       end

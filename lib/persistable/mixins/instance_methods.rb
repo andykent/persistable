@@ -14,6 +14,10 @@ module Persistable
         true
       end
       
+      def delete
+        self.class.delete(key)
+      end
+      
       def config(option)
         self.class.config(option)
       end

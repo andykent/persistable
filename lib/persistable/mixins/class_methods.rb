@@ -37,6 +37,10 @@ module Persistable
       end
       alias size count
       
+      def delete(k)
+        config(:storage_engine).delete(k)
+      end
+      
       def clear!
         config(:storage_engine).clear!
       end

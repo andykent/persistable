@@ -19,6 +19,10 @@ module Persistable
         @connection[k.to_s] = v.to_s
       end
       
+      def delete(k)
+        @connection.out(k)
+      end
+      
       def each
         @connection.iterinit
         while key = @connection.iternext

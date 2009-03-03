@@ -16,6 +16,10 @@ module Persistable
         File.open(file(k), 'w') {|f| f << v }
       end
       
+      def delete(k)
+        FileUtils.rm(file(k))
+      end
+      
       def each
         all_files.each do |file|
           key = file.match(/#{@dir}\/(.+?)\.txt/)[1]
@@ -32,7 +36,7 @@ module Persistable
       end
       
       def clear!
-        FileUtils.rm_rf(@dir)
+        FileUtils.rm_r(@dir)
         FileUtils.mkdir_p(@dir)
         true
       end
