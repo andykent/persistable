@@ -50,8 +50,20 @@ require File.join(File.dirname(__FILE__), '..', 'spec_helper')
         Person.load('Andy').email.should == 'andy.kent@me.com'
       end
       
+      it "can take multiple values to do a batch load" do
+        Person.new('name' => 'Andy', 'email' => 'andy.kent@me.com').save
+        Person.new('name' => 'Mike', 'email' => 'mike.jones@trafficbroker.co.uk').save
+        Person.load('Andy', 'Mike').first.email.should == 'andy.kent@me.com'        
+        Person.load('Andy', 'Mike').last.email.should == 'mike.jones@trafficbroker.co.uk'        
+      end
+      
       it "raises a Persistable::NotFound if a non-existent key is provided" do
         lambda { Person.load('houdini') }.should raise_error(Persistable::NotFound)
+      end
+      
+      it "is aliased as Class[key]" do
+        Person.new('name' => 'Andy', 'email' => 'andy.kent@me.com').save
+        Person['Andy'].email.should == 'andy.kent@me.com'        
       end
     end
 

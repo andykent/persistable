@@ -19,12 +19,15 @@ module Persistable
         @config[option.to_sym]
       end
     
-      def load(k)
-        run_hook(:before, :load)
-        val = load_from_storage(config(:storage_engine).read(k))
-        run_hook(:after, :load)
-        val
+      def load(*keys)
+        if keys.size == 1
+          load_from_storage(config(:storage_engine).read(keys.first))
+        else
+          results = config(:storage_engine).batch_read(keys)
+          results.map {|r| load_from_storage(r) }
+        end
       end
+      alias_method :[], :load
       
       def each
         config(:storage_engine).each do |k, v|
@@ -72,7 +75,10 @@ module Persistable
       end
       
       def load_from_storage(data)
-        load_from_hash(config(:marshal_strategy).from_storage(data))
+        run_hook(:before, :load)
+        val = load_from_hash(config(:marshal_strategy).from_storage(data))
+        run_hook(:after, :load)
+        val
       end
       
       def load_from_hash(data)

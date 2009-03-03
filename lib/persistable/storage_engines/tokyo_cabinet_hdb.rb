@@ -14,6 +14,10 @@ module Persistable
         val = @connection[k.to_s]
         val || (raise Persistable::NotFound, "Key '#{k}' could not be found.")
       end
+
+      def batch_read(keys)
+        keys.map {|k| read(k) }
+      end
       
       def write(k,v)
         @connection[k.to_s] = v.to_s

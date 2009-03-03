@@ -10,6 +10,10 @@ module Persistable
         @store[k]
       end
       
+      def batch_read(keys)
+        keys.map {|k| read(k) }
+      end
+      
       def write(k,v)
         @store[k] = v
       end

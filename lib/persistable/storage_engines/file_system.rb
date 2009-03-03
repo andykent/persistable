@@ -12,6 +12,10 @@ module Persistable
         File.read(file(k))
       end
 
+      def batch_read(keys)
+        keys.map {|k| read(k) }
+      end
+
       def write(k,v)
         File.open(file(k), 'w') {|f| f << v }
       end

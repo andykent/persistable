@@ -4,6 +4,7 @@ kcode = 'u'
 $LOAD_PATH.unshift File.dirname(__FILE__)
 
 require "indexable"
+require "sphinx_searchable"
 
 require "persistable/mixins/class_methods"
 require "persistable/mixins/instance_methods"

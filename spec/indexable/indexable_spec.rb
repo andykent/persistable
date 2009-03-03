@@ -13,6 +13,7 @@ class PersonIndexableSpecClass
   def email; @attributes['email']end
 end
 
+
 describe Persistable::Indexable do
   before :each do
     @andy = PersonIndexableSpecClass.new('name' => 'Andy', 'email' => 'andy.kent@me.com')

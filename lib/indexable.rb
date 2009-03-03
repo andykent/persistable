@@ -23,8 +23,9 @@ module Persistable
           @indexes ||= {}
         end
         
-        def load_via_index(index, key)
-          load(indexes[index].find(key))
+        def load_via_index(index, *keys)
+          destinations = keys.map {|key| indexes[index].find(key) }
+          load(*destinations)
         end
       end
       
@@ -36,7 +37,6 @@ module Persistable
     end
     
     class UniqueIndex
-      
       def initialize(store)
         @store = store
       end
