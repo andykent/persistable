@@ -10,7 +10,8 @@ module Persistable
       end
       
       def read(k)
-        @connection[k.to_s]
+        val = @connection[k.to_s]
+        val || (raise Persistable::NotFound, "Key '#{k}' could not be found.")
       end
       
       def write(k,v)
@@ -25,7 +26,7 @@ module Persistable
       end
       
       def has_key?(k)
-        read(k) != nil
+        @connection[k.to_s] != nil
       end
       
       def count

@@ -6,6 +6,7 @@ module Persistable
       end
       
       def read(k)
+        raise Persistable::NotFound, "Key '#{k}' could not be found." unless has_key?(k)
         @store[k]
       end
       

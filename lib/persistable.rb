@@ -23,6 +23,7 @@ module Persistable
   class Error < StandardError; end
   class ConnectionError < Persistable::Error; end
   class NotImplemented < Persistable::Error; end
+  class NotFound < Persistable::Error; end
   
   def self.included(c)
     c.send(:extend, Mixins::ClassMethods)

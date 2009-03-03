@@ -41,6 +41,10 @@ require File.join(File.dirname(__FILE__), '..', 'spec_helper')
         Person.new('name' => 'Andy', 'email' => 'andy.kent@me.com').save
         Person.load('Andy').email.should == 'andy.kent@me.com'
       end
+      
+      it "raises a Persistable::NotFound if a non-existent key is provided" do
+        lambda { Person.load('houdini') }.should raise_error(Persistable::NotFound)
+      end
     end
 
     describe "#each" do
