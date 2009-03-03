@@ -16,7 +16,11 @@ require "persistable/storage_engines/file_system"
 require "persistable/storage_engines/in_memory"
 require "persistable/storage_engines/tokyo_cabinet_hdb"
 
-
+class Object
+  def persistable?
+    ancestors.include?(Persistable)
+  end
+end
 
 module Persistable
   class Error < StandardError; end

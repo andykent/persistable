@@ -23,7 +23,14 @@ require File.join(File.dirname(__FILE__), '..', 'spec_helper')
     end
     
     after(:each) { Person.clear! }
-
+    
+    describe "#persistable?" do
+      it "returns true if the class is persistable, false otherwise" do
+        Person.should be_persistable
+        String.should_not be_persistable
+      end
+    end
+    
     describe ".save" do
       it "saves an entry and returns true if successful" do
         andy = Person.new('name' => 'Andy', 'email' => 'andy.kent@me.com')
