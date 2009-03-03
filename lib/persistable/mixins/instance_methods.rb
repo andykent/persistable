@@ -15,7 +15,9 @@ module Persistable
       end
       
       def delete
+        run_hook(:before, :delete)
         self.class.delete(key)
+        run_hook(:after, :delete)
       end
       
       def config(option)

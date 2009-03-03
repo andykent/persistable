@@ -15,6 +15,7 @@ module Persistable
           else
             indexes[property] = UniqueIndex.new(opts[:store])
             self.after(:save) { |obj| obj.indexes[property].add_entry(obj.send(property), obj.key) }
+            self.after(:delete) { |obj| obj.indexes[property].delete_entry(obj.send(property)) }
           end
         end
         
@@ -35,12 +36,17 @@ module Persistable
     end
     
     class UniqueIndex
+      
       def initialize(store)
         @store = store
       end
       
       def add_entry(index_value, destination_key)
         @store.write(index_value.to_s, destination_key.to_s)
+      end
+      
+      def delete_entry(index_value)
+        @store.delete(index_value)
       end
       
       def find(key)
@@ -56,6 +62,10 @@ module Persistable
       
       def add_entry(destination_key)
         @store.write(next_available_key, destination_key.to_s)
+      end
+      
+      def delete_entry(index_value)
+        @store.delete(index_value)
       end
       
       def find(key)

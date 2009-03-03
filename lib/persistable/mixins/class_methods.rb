@@ -38,9 +38,7 @@ module Persistable
       alias size count
       
       def delete(k)
-        run_hook(:before, :delete)
         config(:storage_engine).delete(k)
-        run_hook(:after, :delete)
       end
       
       def clear!

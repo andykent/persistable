@@ -14,17 +14,24 @@ class PersonIndexableSpecClass
 end
 
 describe Persistable::Indexable do
-  before :all do
-    PersonIndexableSpecClass.new('name' => 'Andy', 'email' => 'andy.kent@me.com').save
+  before :each do
+    @andy = PersonIndexableSpecClass.new('name' => 'Andy', 'email' => 'andy.kent@me.com')
+    @andy.save
     PersonIndexableSpecClass.new('name' => 'Joe', 'email' => 'joe@bloggs.com').save
   end
   
-  after :all do
+  after :each do
     PersonIndexableSpecClass.clear!
   end
   
   it "allows querying unique indexes on any string attribute" do
     PersonIndexableSpecClass.load_via_index(:email, 'andy.kent@me.com').name.should == 'Andy'
+  end
+  
+  it "removes items from the index on deletion" do
+    @andy.delete
+    PersonIndexableSpecClass.stub!(:load)
+    lambda { PersonIndexableSpecClass.load_via_index(:email, 'andy.kent@me.com') }.should raise_error(Persistable::NotFound)   
   end
   
   it "allows auto incrementing indexes" do
