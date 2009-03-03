@@ -2,10 +2,14 @@ module Persistable
   module Mixins
     module InstanceMethods
       def save
-        config(:storage_engine).write( key, config(:marshal_strategy).to_storage( hash_for_saving ) )
+        save!
         true
-      # rescue
-      #   false
+      rescue
+        false
+      end
+      
+      def save!
+        config(:storage_engine).write( key, config(:marshal_strategy).to_storage( hash_for_saving ) )
       end
       
       def config(option)
