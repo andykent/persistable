@@ -9,7 +9,8 @@ require File.join(File.dirname(__FILE__), '..', 'spec_helper')
   class Person
     include Persistable
     def initialize(attributes); @attributes = attributes end
-    def to_hash; @attributes end
+    def to_storage_hash; @attributes end
+    def self.from_storage_hash(attrs) new(attrs) end
     def key; @attributes['name'] end
     def name; @attributes['name'] end
     def email; @attributes['email']end

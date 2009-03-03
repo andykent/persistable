@@ -4,8 +4,8 @@ module Persistable
       def reset_persistable_defaults
         @config = {}
         @hooks = {}
-        use :load, :new
-        use :save, :to_hash
+        use :load, :from_storage_hash
+        use :save, :to_storage_hash
         use :storage_engine, StorageEngines::InMemory.new
         use :marshal_strategy, MarshalStrategies::RubyMarshal.new
         use :key, :key

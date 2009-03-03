@@ -9,10 +9,9 @@ class HooksSpecClass
   
   before(:load) { |klass| klass.before_load_hook = "BEFORE LOAD" }
   after(:load) { |klass| klass.after_load_hook = "AFTER LOAD" }
-  
-  def initialize(args={}) end
   def key; 'test' end
-  def to_hash; {} end
+  def to_storage_hash; {} end
+  def self.from_storage_hash(attrs); new() end
 end
 
 describe "Hooks" do

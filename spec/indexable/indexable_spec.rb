@@ -5,8 +5,9 @@ class PersonIndexableSpecClass
   include Indexable
   index :auto_increment, :store => Persistable::StorageEngines::InMemory.new
   index :email, :store => Persistable::StorageEngines::InMemory.new
-  def initialize(attributes); @attributes = attributes end
-  def to_hash; @attributes end
+  def initialize(attributes) @attributes = attributes end
+  def self.from_storage_hash(attributes); new(attributes) end
+  def to_storage_hash; @attributes end
   def key; @attributes['name'] end
   def name; @attributes['name'] end
   def email; @attributes['email']end
