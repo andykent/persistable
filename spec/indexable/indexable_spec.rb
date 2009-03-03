@@ -3,6 +3,7 @@ require File.join(File.dirname(__FILE__), '..', 'spec_helper')
 class PersonIndexableSpecClass
   include Persistable
   include Indexable
+  index :auto_increment, :store => Persistable::StorageEngines::InMemory.new
   index :email, :store => Persistable::StorageEngines::InMemory.new
   def initialize(attributes); @attributes = attributes end
   def to_hash; @attributes end
@@ -12,9 +13,21 @@ class PersonIndexableSpecClass
 end
 
 describe Persistable::Indexable do
-  it "allows querying unique indexes on any string attribute" do
+  before :all do
     PersonIndexableSpecClass.new('name' => 'Andy', 'email' => 'andy.kent@me.com').save
     PersonIndexableSpecClass.new('name' => 'Joe', 'email' => 'joe@bloggs.com').save
+  end
+  
+  after :all do
+    PersonIndexableSpecClass.clear!
+  end
+  
+  it "allows querying unique indexes on any string attribute" do
     PersonIndexableSpecClass.load_via_index(:email, 'andy.kent@me.com').name.should == 'Andy'
+  end
+  
+  it "allows auto incrementing indexes" do
+    PersonIndexableSpecClass.load_via_index(:auto_increment, 1).name.should == 'Andy'
+    PersonIndexableSpecClass.load_via_index(:auto_increment, 2).name.should == 'Joe'
   end
 end
