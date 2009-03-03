@@ -24,7 +24,7 @@ module Persistable
       end
       
       def delete(k)
-        @connection.out(k)
+        @connection.out(k.to_s)
       end
       
       def each

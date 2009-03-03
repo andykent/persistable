@@ -45,12 +45,12 @@ module Persistable
         # TODO add some nice filter support
         # client.filters << Riddle::Client::Filter.new("merchant_id", [merchant_id]) if merchant_id
         results = client.query(query, @index_name.to_s)
-        ids = results[:matches].map {|m| m[:doc]}
-        { :results => @klass.load_via_index(:auto_increment, *ids), :total => results[:total_found] }
+        docids = results[:matches].map {|m| m[:doc]}
+        { :results => @klass.load_batch_via_index(@docid, docids), :total => results[:total_found] }
       end
       
-      def guid(name)
-        @guid = name
+      def docid(name)
+        @docid = name
       end
       
       def field(name)
@@ -70,7 +70,7 @@ module Persistable
       end
       
       def xml_document(doc)
-         %(<sphinx:document id="#{doc.send(@guid)}"> #{xml_fields(doc)} #{xml_attributes(doc)} </sphinx:document>)
+         %(<sphinx:document id="#{doc.send(@docid)}"> #{xml_fields(doc)} #{xml_attributes(doc)} </sphinx:document>)
       end
       
       private

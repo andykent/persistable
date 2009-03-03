@@ -3,7 +3,6 @@ require File.join(File.dirname(__FILE__), '..', 'spec_helper')
 class PersonIndexableSpecClass
   include Persistable
   include Indexable
-  index :auto_increment, :store => Persistable::StorageEngines::InMemory.new
   index :email, :store => Persistable::StorageEngines::InMemory.new
   def initialize(attributes) @attributes = attributes end
   def self.from_storage_hash(attributes); new(attributes) end
@@ -33,10 +32,5 @@ describe Persistable::Indexable do
     @andy.delete
     PersonIndexableSpecClass.stub!(:load)
     lambda { PersonIndexableSpecClass.load_via_index(:email, 'andy.kent@me.com') }.should raise_error(Persistable::NotFound)   
-  end
-  
-  it "allows auto incrementing indexes" do
-    PersonIndexableSpecClass.load_via_index(:auto_increment, 1).name.should == 'Andy'
-    PersonIndexableSpecClass.load_via_index(:auto_increment, 2).name.should == 'Joe'
   end
 end

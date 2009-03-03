@@ -48,7 +48,7 @@ module Persistable
       private
 
       def file(k)
-        File.join(@dir, "#{k}.txt")
+        File.join(@dir, "#{k.to_s}.txt")
       end
       
       def all_files

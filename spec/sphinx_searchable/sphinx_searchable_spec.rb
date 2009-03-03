@@ -18,8 +18,8 @@ describe Persistable::SphinxSearchable do
       system "indexer --config #{config_path}"
       system "searchd -c #{config_path}"
       
-      PersonSearchableSpecClass.new('name' => "Andy", 'email' => 'andy.kent@me.com', 'age' => 25).save!
-      PersonSearchableSpecClass.new('name' => "Mike", 'email' => 'mike.jones@trafficbroker.co.uk', 'age' => 31).save!
+      PersonSearchableSpecClass.new('name' => "Andy", 'email' => 'andy.kent@me.com', 'age' => 25, 'guid' => 123).save!
+      PersonSearchableSpecClass.new('name' => "Mike", 'email' => 'mike.jones@trafficbroker.co.uk', 'age' => 31, 'guid' => 456).save!
     end
     
     after :all do
@@ -27,7 +27,6 @@ describe Persistable::SphinxSearchable do
     end
     
     it "should use riddle to search the sphinx index given" do
-      pending
       PersonSearchableSpecClass.search(:people, "andy", :match_mode => :any)[:results].first.email.should == 'andy.kent@me.com'   
     end
   end

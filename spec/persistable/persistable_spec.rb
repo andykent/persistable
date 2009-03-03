@@ -53,8 +53,8 @@ require File.join(File.dirname(__FILE__), '..', 'spec_helper')
       it "can take multiple values to do a batch load" do
         Person.new('name' => 'Andy', 'email' => 'andy.kent@me.com').save
         Person.new('name' => 'Mike', 'email' => 'mike.jones@trafficbroker.co.uk').save
-        Person.load('Andy', 'Mike').first.email.should == 'andy.kent@me.com'        
-        Person.load('Andy', 'Mike').last.email.should == 'mike.jones@trafficbroker.co.uk'        
+        Person.load_batch(['Andy', 'Mike']).first.email.should == 'andy.kent@me.com'        
+        Person.load_batch(['Andy', 'Mike']).last.email.should == 'mike.jones@trafficbroker.co.uk'        
       end
       
       it "raises a Persistable::NotFound if a non-existent key is provided" do

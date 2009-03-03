@@ -5,11 +5,11 @@ class PersonSearchableSpecClass
   include Indexable
   include SphinxSearchable
   
-  index :auto_increment, :store => Persistable::StorageEngines::InMemory.new
+  index :guid, :store => Persistable::StorageEngines::InMemory.new
   
   sphinx_index :people do
     set :max_matches, 100
-    guid :guid
+    docid :guid # must be a 32bit unsigned int and must have an index setup on this attr
     field :name
     field :email
     attribute :age, :int

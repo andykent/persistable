@@ -7,7 +7,7 @@ module Persistable
       
       def read(k)
         raise Persistable::NotFound, "Key '#{k}' could not be found." unless has_key?(k)
-        @store[k]
+        @store[k.to_s]
       end
       
       def batch_read(keys)
@@ -15,11 +15,11 @@ module Persistable
       end
       
       def write(k,v)
-        @store[k] = v
+        @store[k.to_s] = v
       end
       
       def delete(k)
-        @store.delete(k)
+        @store.delete(k.to_s)
       end
       
       def each(&blk)
@@ -27,7 +27,7 @@ module Persistable
       end
       
       def has_key?(k)
-        @store.has_key?(k)
+        @store.has_key?(k.to_s)
       end
       
       def count

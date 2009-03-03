@@ -19,14 +19,15 @@ module Persistable
         @config[option.to_sym]
       end
     
-      def load(*keys)
-        if keys.size == 1
-          load_from_storage(config(:storage_engine).read(keys.first))
-        else
-          results = config(:storage_engine).batch_read(keys)
-          results.map {|r| load_from_storage(r) }
-        end
+      def load(key)
+        load_from_storage(config(:storage_engine).read(key))
       end
+      
+      def load_batch(keys)
+        results = config(:storage_engine).batch_read(keys)
+        results.map {|r| load_from_storage(r) }
+      end
+      
       alias_method :[], :load
       
       def each
