@@ -8,14 +8,18 @@ module Persistable
     module Mixins
       module ClassMethods
         def index(property, &blk)
-          indexes[property] = UniqueIndex.new(&blk)
-          self.after(:save) { |obj| obj.indexes[property].add_entry(obj.send(property), obj.key) }
-          self.after(:delete) { |obj| obj.indexes[property].delete_entry(obj.send(property)) }
+          indexes[property] = UniqueIndex.new(self, property, &blk)
+          self.after(:save) { |obj| obj.indexes[property].add_entry(obj) }
+          self.after(:delete) { |obj| obj.indexes[property].delete_entry(obj) }
           self.after(:clear) { |klass| klass.indexes[property].clear! }
         end
         
         def indexes
           @indexes ||= {}
+        end
+        
+        def rebuild_index(index_name)
+          indexes[index_name].rebuild 
         end
         
         def load_via_index(index_name, key)
@@ -57,17 +61,18 @@ module Persistable
     end
     
     class UniqueIndex
-      def initialize(&blk)
+      def initialize(klass, property, &blk)
+        @klass, @property = klass, property
         @index_entry_class = Class.new(Persistable::Indexable::IndexEntry)
         @index_entry_class.class_eval(&blk)
       end
       
-      def add_entry(index_value, destination_key)
-        @index_entry_class.new(index_value, destination_key).save!
+      def add_entry(obj)
+        @index_entry_class.new(obj.send(@property), obj.key).save!
       end
       
-      def delete_entry(index_value)
-        @index_entry_class.delete(index_value)
+      def delete_entry(obj)
+        @index_entry_class.delete(obj.send(@property))
       end
       
       def find(key)
@@ -76,6 +81,11 @@ module Persistable
       
       def size
         @index_entry_class.size
+      end
+      
+      def rebuild
+        clear!
+        @klass.each {|k,obj| add_entry(obj) }
       end
       
       def clear!

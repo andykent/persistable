@@ -42,4 +42,11 @@ describe Persistable::Indexable do
     PersonIndexableSpecClass.clear!
     PersonIndexableSpecClass.indexes[:email].size.should == 0
   end
+  
+  it "allows rebuilding indexes" do
+    PersonIndexableSpecClass.indexes[:email].clear!
+    PersonIndexableSpecClass.indexes[:email].size.should == 0
+    PersonIndexableSpecClass.rebuild_index(:email)
+    PersonIndexableSpecClass.indexes[:email].size.should == 2
+  end
 end
