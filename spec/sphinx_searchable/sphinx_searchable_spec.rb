@@ -28,6 +28,12 @@ describe Persistable::SphinxSearchable do
     
     it "should use riddle to search the sphinx index given" do
       PersonSearchableSpecClass.search(:people, "andy", :match_mode => :any)[:results].first.email.should == 'andy.kent@me.com'   
+      PersonSearchableSpecClass.search(:people, "andy", :match_mode => :any)[:total].should == 1
+    end
+    
+    it "should allow filtering on attributes" do
+      PersonSearchableSpecClass.search(:people, "andy", :filters => { :age => 25 })[:total].should == 1
+      PersonSearchableSpecClass.search(:people, "andy", :filters => { :age => 26 })[:total].should == 0
     end
   end
 end

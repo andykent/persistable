@@ -41,9 +41,12 @@ module Persistable
       def search(query, opts={})
         opts = @sphinx_options.merge(opts)
         client = Riddle::Client.new
+        filters = opts.delete(:filters)
+        filters.each do |attribute, values|
+          values = [values] unless values.is_a?(Array)
+          client.filters << Riddle::Client::Filter.new(attribute.to_s, values)
+        end unless filters.nil?
         opts.each {|option, value| client.send(:"#{option}=", value) }
-        # TODO add some nice filter support
-        # client.filters << Riddle::Client::Filter.new("merchant_id", [merchant_id]) if merchant_id
         results = client.query(query, @index_name.to_s)
         docids = results[:matches].map {|m| m[:doc]}
         { :results => @klass.load_batch_via_index(@docid, docids), :total => results[:total_found] }

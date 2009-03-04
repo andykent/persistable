@@ -11,7 +11,7 @@ class PersonSearchableSpecClass
   
   sphinx_index :people do
     set :max_matches, 100
-    docid :guid # must be a 32bit unsigned int and must have an index setup on this attr
+    docid :guid # must be an integer and must have an index setup on this attr
     field :name
     field :email
     attribute :age, :int
