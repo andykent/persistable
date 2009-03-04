@@ -25,6 +25,12 @@ module Persistable
   class NotImplemented < Persistable::Error; end
   class NotFound < Persistable::Error; end
   
+  class << self
+    def with_mutex(&blk)
+      (@mutex ||= Mutex.new).synchronize(&blk)
+    end
+  end
+  
   def self.included(c)
     c.send(:extend, Mixins::ClassMethods)
     c.send(:include, Mixins::InstanceMethods)

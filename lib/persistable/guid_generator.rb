@@ -18,8 +18,10 @@ class GuidGenerator
   end
   
   def get_next_available_key
-    next_key = (@store.read('__counter__').to_i + 1)
-    @store.write('__counter__', next_key.to_s)
-    next_key
+    Persistable.with_mutex do
+      next_key = (@store.read('__counter__').to_i + 1)
+      @store.write('__counter__', next_key.to_s)
+      next_key
+    end
   end
 end
