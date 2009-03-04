@@ -14,16 +14,16 @@ describe Persistable::SphinxSearchable do
   
   describe "#sphinx_search" do
     before :all do
-      config_path = File.expand_path(File.join(File.dirname(__FILE__), '..', 'config', 'sphinx.conf'))
-      `indexer --config #{config_path}`
-      `searchd -c #{config_path}`
+      @config_path = File.expand_path(File.join(File.dirname(__FILE__), '..', 'config', 'sphinx.conf'))
+      `indexer --config #{@config_path} --all`
+      `searchd -c #{@config_path}`
       
       PersonSearchableSpecClass.new('name' => "Andy", 'email' => 'andy.kent@me.com', 'age' => 25, 'guid' => 123).save!
       PersonSearchableSpecClass.new('name' => "Mike", 'email' => 'mike.jones@trafficbroker.co.uk', 'age' => 31, 'guid' => 456).save!
     end
     
     after :all do
-      `searchd --stop`
+      `searchd --stop -c #{@config_path}`
     end
     
     it "should use riddle to search the sphinx index given" do
