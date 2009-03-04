@@ -142,14 +142,14 @@ SphinxGenerator::Config.setup do |c|
   #
   # BASE SOURCE
   #
-  source :people do
+  source :people_src do
     db_type 'xmlpipe2'
     xmlpipe_command "ruby #{File.join(SPHINX_CONFIG_PATH, 'sphinxpipe.rb')}"
   end
   
   index :people do
     source 'people_src'
-    path 'persistable_specs_people_src'
+    path '/var/sphinx/data/persistable_specs_people_src'
     charset_type 'utf-8'
   end
   
